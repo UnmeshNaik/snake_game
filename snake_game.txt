@@ -1,0 +1,5 @@
+- CREATING A SNAKE GAME IN C.
+
+- STEPS:-
+	1. Finding about positioning cursor in terminal
+		- In linux, Terminal command printf is used for positioning cursor. This command gives access of positioning cursor in terminal(Not in linear way). So, we will not need to design game to do frame by frame.
