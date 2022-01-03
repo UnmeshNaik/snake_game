@@ -27,24 +27,29 @@ struct snake
 {
 	int x,y; //Coordinates of this node	
 	struct snake *p;
-}*o[10],*tail,*head,food;
+}*o[5],*tail,*head,food;
 
 void print()
 {
 	struct snake *ptr=tail,*ptr1=tail->p;
+	struct winsize size;
 	while(ptr!=NULL)
 	{
 		while(ptr1!=NULL)
 		{
 			if(ptr1->x==ptr->x && ptr1->y==ptr->y)
 			{
-				getchar();
+				getchar();	
+				endwin();
 				exit(1);
 			}
 			ptr1=ptr1->p;
 		}
-		if(head->x==143)	
+		if(head->x==143 || head->x == 0 || head->y == 38 || head->y == 0)
+		{
+			endwin();
 			exit(1);
+		}
 		gotoxy(ptr->x,ptr->y);
 		printf("*");
 		ptr=ptr->p;
@@ -57,20 +62,17 @@ void print()
 
 void foodfun(int max_y,int max_x)
 {
-	food.y=rand() % (max_y + 1 - 0) + 0;
-	food.x=rand() % (max_x + 1 - 0) + 0;
+	food.y=rand() % (max_y + 1);
+	food.x=rand() % (max_x + 1);
 }
 
 void initial()
 {
 	int i;
-	/*o[0]=(struct snake*)malloc(sizeof(struct snake));
-	o[1]=(struct snake*)malloc(sizeof(struct snake));
-	o[2]=(struct snake*)malloc(sizeof(struct snake));*/
+
 	for(i=0;i<len;i++)
-	{
 		o[i]=(struct snake*)malloc(sizeof(struct snake));
-	}
+	
 	tail=o[0];
 	for(i=0;i<len;i++)
 	{
@@ -125,25 +127,6 @@ void run()
 	}
 }
 
-// int _kbhit() {
-//     static const int STDIN = 0;
-//     static bool initialized = false;
-
-//     if (! initialized) {
-//         // Use termios to turn off line buffering
-//         struct termios term;
-//         tcgetattr(STDIN, &term);
-//         term.c_lflag &= ~ICANON;
-//         tcsetattr(STDIN, TCSANOW, &term);
-//         setbuf(stdin, NULL);
-//         initialized = true;
-//     }
-
-//     int bytesWaiting;
-//     ioctl(STDIN, FIONREAD, &bytesWaiting);
-//     return bytesWaiting;
-// }
-
 int main()
 {
 	//Getting windows dimensions
@@ -154,8 +137,7 @@ int main()
 	initscr();
     //cbreak();
     noecho();
-    //scrollok(stdscr, TRUE);
-    //nodelay(stdscr, TRUE); OR timeout(0 or +ve)
+    
     timeout(1);
     initial();
     foodfun(size.ws_row,size.ws_col);
@@ -163,7 +145,6 @@ int main()
     	ch=getch();
         if (ch == 'w' && dir!='s' )
         {
-            //printw("You pressed G\n");
             dir='w';
         }
         else if(ch == 's' && dir!='w')
@@ -172,8 +153,7 @@ int main()
         	dir='a';
         else if((ch == 'd' || ch == 'D') && dir != 'a')
         	dir='d';
-        napms(50);
-        //printw("Running\n");
+        napms(75);
         clr();
         print();
         run();
